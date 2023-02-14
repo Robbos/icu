@@ -437,6 +437,9 @@ U_CAPI int32_t  U_EXPORT2 uprv_timezone(void);
  */
 U_CAPI const char* U_EXPORT2 uprv_tzname(int n);
 
+U_CAPI const char* U_EXPORT2 findOlsonId(char *(*getRealPath)(const char *__restrict __name,
+		       char *__restrict __resolved));
+
 /**
  * Reset the global tzname cache.
  * @internal
