@@ -53,7 +53,7 @@ static UBool compareWithNAN(double x, double y);
 static void doAssert(double expect, double got, const char *message);
 
 const char *expectedTimezone = "Asia/Taipei";
-const char* stubRealPath(const char *__restrict __name,
+static char* stubRealPath(const char *__restrict __name,
 		       char *__restrict __resolved) {
     strcpy(__resolved, "/usr/share/zoneinfo/posix/");
     strcat(__resolved, expectedTimezone);

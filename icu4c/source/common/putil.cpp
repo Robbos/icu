@@ -1197,7 +1197,7 @@ uprv_tzname(int n)
         This isn't guaranteed to work because it may not be a symlink.
         */
         const char *olsonId = findOlsonId(realpath);
-        if (olsonId != nullptr){
+        if (olsonId != nullptr) {
             return olsonId;
         } else {
 #if defined(SEARCH_TZFILE)
