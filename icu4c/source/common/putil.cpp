@@ -1108,23 +1108,30 @@ uprv_tzname_clear_cache(void)
 #endif
 }
 
-const char * findOlsonId(char *(*getRealPath)(const char *__restrict __name,
-		       char *__restrict __resolved)) {
-    char *ret = getRealPath(TZDEFAULT, gTimeZoneBuffer);
-    if (ret != nullptr && uprv_strcmp(TZDEFAULT, gTimeZoneBuffer) != 0) {
-        int32_t tzZoneInfoTailLen = uprv_strlen(TZZONEINFOTAIL);
-        char *  tzZoneInfoTailPtr = uprv_strstr(gTimeZoneBuffer, TZZONEINFOTAIL);
-        if (tzZoneInfoTailPtr != nullptr) {
-            tzZoneInfoTailPtr += tzZoneInfoTailLen;
-            skipZoneIDPrefix(const_cast<const char **>(&tzZoneInfoTailPtr));
-            if (isValidOlsonID(tzZoneInfoTailPtr)) {
-                return (gTimeZoneBufferPtr = tzZoneInfoTailPtr);
+#if defined(CHECK_LOCALTIME_LINK) && !defined(DEBUG_SKIP_LOCALTIME_LINK)
+    const char * findOlsonId(char *(*getRealPath)(const char *__restrict __name,
+                char *__restrict __resolved)) {
+        char *ret = getRealPath(TZDEFAULT, gTimeZoneBuffer);
+        if (ret != nullptr && uprv_strcmp(TZDEFAULT, gTimeZoneBuffer) != 0) {
+            int32_t tzZoneInfoTailLen = uprv_strlen(TZZONEINFOTAIL);
+            char *  tzZoneInfoTailPtr = uprv_strstr(gTimeZoneBuffer, TZZONEINFOTAIL);
+            if (tzZoneInfoTailPtr != nullptr) {
+                tzZoneInfoTailPtr += tzZoneInfoTailLen;
+                skipZoneIDPrefix(const_cast<const char **>(&tzZoneInfoTailPtr));
+                if (isValidOlsonID(tzZoneInfoTailPtr)) {
+                    return (gTimeZoneBufferPtr = tzZoneInfoTailPtr);
+                }
             }
         }
-    }
 
-    return nullptr;
-}
+        return nullptr;
+    }
+#else
+    const char * findOlsonId(char *(*getRealPath)(const char *__restrict __name,
+                char *__restrict __resolved)) {
+        return nullptr;
+    }
+#endif
 
 U_CAPI const char* U_EXPORT2
 uprv_tzname(int n)
