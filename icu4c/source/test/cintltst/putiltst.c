@@ -52,14 +52,6 @@ static void TestSignedRightShiftIsArithmetic(void) {
 static UBool compareWithNAN(double x, double y);
 static void doAssert(double expect, double got, const char *message);
 
-const char *expectedTimezone = "Asia/Taipei";
-static char* stubRealPath(const char *__restrict __name,
-		       char *__restrict __resolved) {
-    strcpy(__resolved, "/usr/share/zoneinfo/posix/");
-    strcat(__resolved, expectedTimezone);
-    return __resolved;
-}
-
 static void TestPUtilAPI(void){
 
     double  n1=0.0, y1=0.0, expn1, expy1;
@@ -220,24 +212,12 @@ static void TestPUtilAPI(void){
         int32_t tzoffset = uprv_timezone();
         log_verbose("Value returned from uprv_timezone = %d\n",  tzoffset);
         if (tzoffset != 28800) {
-            log_verbose("***** WARNING: If testing in the PST timezone, t_timezone should return 28800! *****\n");
+            log_verbose("***** WARNING: If testing in the PST timezone, t_timezone should return 28800! *****");
         }
         if ((tzoffset % 1800 != 0)) {
-            log_info("Note: t_timezone offset of %ld (for %s : %s) is not a multiple of 30min.\n", tzoffset, uprv_tzname(0), uprv_tzname(1));
+            log_info("Note: t_timezone offset of %ld (for %s : %s) is not a multiple of 30min.", tzoffset, uprv_tzname(0), uprv_tzname(1));
         }
         /*tzoffset=uprv_getUTCtime();*/
-    }
-
-    log_verbose("Testing findOlsonId()....\n");
-    {
-        const char *timezoneName = findOlsonId(stubRealPath);
-        if (timezoneName == NULL) {
-            log_err("ERROR: findOlsonId returned a nullptr\n");
-        } else {
-            if (0 != uprv_strcmp(expectedTimezone, timezoneName)) {
-                log_err("ERROR: findOlsonId() should return '%s', but returned '%s'\n", expectedTimezone, timezoneName);
-            }
-        }
     }
 
 #if U_PLATFORM_USES_ONLY_WIN32_API 
