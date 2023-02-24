@@ -722,7 +722,7 @@ extern U_IMPORT char *U_TZNAME[];
 #include <dirent.h>  /* Needed to search through system timezone files */
 #endif
 static char gTimeZoneBuffer[PATH_MAX];
-static char *gTimeZoneBufferPtr = nullptr;
+static const char *gTimeZoneBufferPtr = nullptr;
 #endif
 
 #if !U_PLATFORM_USES_ONLY_WIN32_API
@@ -1174,10 +1174,10 @@ uprv_tzname(int n)
         char *ret = realpath(TZDEFAULT, gTimeZoneBuffer);
         if (ret != nullptr && uprv_strcmp(TZDEFAULT, gTimeZoneBuffer) != 0) {
             int32_t tzZoneInfoTailLen = uprv_strlen(TZZONEINFOTAIL);
-            char *  tzZoneInfoTailPtr = uprv_strstr(gTimeZoneBuffer, TZZONEINFOTAIL);
+            const char *tzZoneInfoTailPtr = uprv_strstr(gTimeZoneBuffer, TZZONEINFOTAIL);
             if (tzZoneInfoTailPtr != nullptr) {
                 tzZoneInfoTailPtr += tzZoneInfoTailLen;
-                skipZoneIDPrefix(const_cast<const char **>(&tzZoneInfoTailPtr));
+                skipZoneIDPrefix(&tzZoneInfoTailPtr);
                 if (isValidOlsonID(tzZoneInfoTailPtr)) {
                     return (gTimeZoneBufferPtr = tzZoneInfoTailPtr);
                 }
